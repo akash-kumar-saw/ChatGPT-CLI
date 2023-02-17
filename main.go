@@ -21,7 +21,7 @@ func getResponse(context context.Context, client gpt3.Client, question string) {
 		MaxTokens:   gpt3.IntPtr(3000),
 		Temperature: gpt3.Float32Ptr(0),
 	}, func(response *gpt3.CompletionResponse) {
-		fmt.Println(response.Choices[0].Text)
+		fmt.Printf(response.Choices[0].Text)
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -46,6 +46,8 @@ func main() {
 		return
 	}
 
+	fmt.Printf("***** ChatGPT - Press 'Q' to Exit *****")
+
 	context := context.Background()
 	client := gpt3.NewClient(apiKey)
 
@@ -57,14 +59,16 @@ func main() {
 			run := true
 
 			for run {
-				fmt.Print("Say Something ('Q' to Quit) : ")
+				fmt.Printf("\nYou : ")
 				if !scanner.Scan() {
 					break
 				}
 
 				question := scanner.Text()
-
-				if question == "Q" {
+				if question == "" {
+					continue
+				}
+				if question == "Q" || question == "q" {
 					break
 				}
 				getResponse(context, client, question)
@@ -72,4 +76,5 @@ func main() {
 		},
 	}
 	rootCmd.Execute()
+	fmt.Printf("\n***** Thanks for Using ChatGPT *****")
 }
